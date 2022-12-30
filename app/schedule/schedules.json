@@ -1,0 +1,21 @@
+{ 
+    "Normal":{
+        "Period 1": "8:50 AM - 9:38 AM",
+        "Period 2": "9:43 AM - 10:31 AM",
+        "Period 3": "10:36 AM - 11:24 AM",
+        "Period 4": "11:29 AM - 12:51 PM",
+        "Period 5": "12:51 PM - 1:39 PM",
+        "Advisory": "1:44 PM - 2:14 PM",
+        "Period 6": "2:19 PM - 3:07 PM",
+        "Period 7": "3:12 PM - 4:00 PM"
+    },
+    "Thursday":{
+        "Period 1": "8:50 AM - 9:35 AM",
+        "Period 2": "9:40 AM - 10:25 AM",
+        "Period 3": "10:30 AM - 11:14 AM",
+        "Period 4": "11:19 AM - 12:38 PM",
+        "Period 5": "12:38 PM - 1:22 PM",
+        "Period 6": "1:27 PM - 2:11 PM",
+        "Period 7": "2:16 PM - 3:00 PM"
+    }
+}
