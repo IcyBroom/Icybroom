@@ -1,98 +1,256 @@
 "use client"
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef } from "react";
 
-const CELL_SIZE = 20; // size of each cell in pixels
-const UPDATE_INTERVAL = 100; // update interval in milliseconds
-
-function GameOfLife() {
-  const canvasRef = useRef(null);
-  const [board, setBoard] = useState(null);
-  const [isRunning, setIsRunning] = useState(false);
-  const [speed, setSpeed] = useState(UPDATE_INTERVAL);
-  const [boardSize, setBoardSize] = useState(20);
-
-  // Initialize the board when the component mounts
-  React.useEffect(() => {
-    const board = createBoard(boardSize);
-    setBoard(board);
-  }, []);
-
-  // Update the board and draw to canvas when the component updates
-  React.useEffect(() => {
-    if (isRunning) {
-      const nextBoard = updateBoard(board);
-      setBoard(nextBoard);
-      drawBoard(canvasRef.current, nextBoard);
-      setTimeout(() => {
-        requestAnimationFrame(() => {
-          setIsRunning(true);
-        });
-      }, speed);
-    }
-  }, [board, isRunning, speed]);
-
-  // Handle clicking on the canvas to toggle cell state
-  function handleCanvasClick(event) {
-    const { offsetX, offsetY } = event;
-    const x = Math.floor(offsetX / CELL_SIZE);
-    const y = Math.floor(offsetY / CELL_SIZE);
-    if (x >= 0 && x < boardSize && y >= 0 && y < boardSize) {
-      const newBoard = toggleCell(board, x, y);
-      setBoard(newBoard);
-      drawBoard(canvasRef.current, newBoard);
-    }
-  }
-
-  // Handle changing the speed slider
-  function handleSpeedChange(event) {
-    setSpeed(event.target.value);
-  }
-
-  // Handle changing the board size slider
-  function handleBoardSizeChange(event) {
-    setBoardSize(event.target.value);
-  }
-
-  // Start/stop the game when the start/stop button is clicked
-  function handleStartStopClick() {
-    setIsRunning(!isRunning);
-  }
-
-  return (
-    <div>
-      <canvas
-        width={CELL_SIZE * boardSize}
-        height={CELL_SIZE * boardSize}
-        ref={canvasRef}
-        onClick={handleCanvasClick}
-      />
-      <div>
-        <label>
-          Speed:
-          <input
-            type="range"
-            min={50}
-            max={1000}
-            value={speed}
-            onChange={handleSpeedChange}
-          />
-        </label>
-      </div>
-      <div>
-        <label>
-          Board size:
-          <input
-            type="range"
-            min={10}
-            max={50}
-            value={boardSize}
-            onChange={handleBoardSizeChange}
-          />
-        </label>
-      </div>
-      <button onClick={handleStartStopClick}> start</button>
-    </div>
-    );
+const settings = {
+    width : 400,
+    height : 400,
+    columns: 21,
+    rows: 21,
+    speed: 10
 }
 
-export default GameOfLife;
+
+export default function GameOfLife(props){
+    let canva = useRef();
+    
+    useEffect(()=>{
+        let settings = {
+            width : props.width || 400,
+            height : props.height || 400,
+            columns: props.columns || 50,
+            rows: props.rows || 50,
+            speed: props.speed || 10,
+        }
+        const canvas = canva.current;
+        canvas.width = settings.width
+        let extraHeight = 100;
+        canvas.height = settings.height + extraHeight;
+        let context = canvas.getContext('2d');
+        new GOL(settings.rows,settings.columns,settings.width,settings.height,canvas,context, extraHeight)
+    })
+    
+
+    return (
+           <div className = "text-center mt-9">
+               <canvas className = "m-auto" ref={canva} />
+               How to play:
+                <br/>
+                1. Click on the cells to make them alive
+                <br/>
+                2. Click on the start button to start the game
+                <br/>
+                3. Click on the stop button to stop the game
+           </div>
+       )
+}
+
+
+
+class GOL{
+    running = false;
+    darkmode;
+    intervalId;
+    
+    //Buttons
+    startButton;
+    darkModeButton;
+
+
+    constructor(rows, columns,width,height,canvas,context, extraHeight){
+        this.rows = rows;
+        this.columns = columns;
+        this.width = width;
+        this.height = height;
+        this.canvas = canvas;
+        this.context = context;
+        this.extraHeight = extraHeight;
+        this.board = this.createBoard();
+        this.darkmode = true;
+        this.mouse = {x: 0, y: 0};
+        this.mouseMove = document.addEventListener("mousemove", e => {
+            this.mouse = this.getMousePos(canvas, e);
+        });
+        this.drawBoard();
+        document.onmousemove = (event) =>{
+            const isStartButton = context.isPointInPath(this.startButton, event.offsetX, event.offsetY);
+            const isDarkModeButton = context.isPointInPath(this.darkModeButton, event.offsetX, event.offsetY);
+            if (isStartButton || isDarkModeButton){
+                document.body.style.cursor = 'pointer';
+            }else{
+                document.body.style.cursor = 'default';
+            }
+        }
+        document.onclick = (event) => {
+            const isStartButton = context.isPointInPath(this.startButton, event.offsetX, event.offsetY);
+            if (isStartButton){ this.start()}
+            const isDarkModeButton = context.isPointInPath(this.darkModeButton, event.offsetX, event.offsetY);
+            if (isDarkModeButton){ this.darkmode = !this.darkmode; this.drawBoard()}
+            if(this.mousey < this.height){
+              this.makeAlive(this.mouse.x,this.mouse.y)
+              this.drawBoard()
+            }
+        }
+        document.onmousedown = (event) => {
+            if(this.mouse.y < this.height){
+              this.makeAlive(this.mouse.x,this.mouse.y)
+              this.drawBoard()
+            }
+        }
+        document.onkeydown = (e) => {
+            e.preventDefault();
+            if(e.key == 'r' || e.key == 'R'){this.reset();}
+        }
+    }
+    makeAlive(x,y){
+        let pieceWidth = this.width / this.columns
+        let pieceHeight = this.height / this.rows
+        let i = Math.floor(x / pieceWidth)
+        let j = Math.floor(y / pieceHeight)
+        if(i >= 0 && i < this.columns && j >= 0 && j < this.rows){
+            this.board[j][i] = 1
+        }
+    }
+    getMousePos(canvas, evt) {
+        let rect = this.canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+    }
+    fill(r,g,b) {
+        this.context.fillStyle = 'rgb('+r+','+g+','+b+')'
+    }
+    fillRect(x,y,w,h){
+        this.context.fillRect(x,y,w,h)
+    }
+    fillText(text,x,y,size){
+        this.context.font = `${size}px Arial`;
+        this.context.fillText(text,x,y);
+    }
+    fillLine(x1,y1,x2,y2){
+        this.context.beginPath();
+        this.context.moveTo(x1,y1);
+        this.context.lineTo(x2,y2);
+        this.context.stroke();
+    }
+    start(){
+    if(this.running == false){
+        this.running = true;
+        window.clearInterval(this.intervalId)
+        this.intervalId = window.setInterval(()=>{
+            this.drawBoard()
+            this.update()
+        },1000/settings.speed)
+    }else{
+        this.running = false;
+        window.clearInterval(this.intervalId)
+        // this.drawBoard()
+        }
+    }
+    reset(){
+        this.board = this.createBoard();
+        this.drawBoard();
+    }
+    createBoard(){
+        let board = []
+        for(let i = 0; i < this.rows; i++){
+            board[i] = []
+            for(let j = 0; j < this.columns; j++){
+                board[i][j] = 0
+            }
+        }
+        return board
+    }
+    drawBoard(){
+        let pieceWidth = this.width / this.columns
+        let pieceHeight = this.height / this.rows
+        
+        {
+            //empty the board
+            if(this.darkmode){this.fill(0,0,0)}
+            else{this.fill(255,255,255)}
+            this.fillRect(0,0,this.width,this.height + this.extraHeight)
+        }
+
+        for(let i = 0; i < this.rows; i++){
+            for(let j = 0; j < this.columns; j++){
+                if(this.board[i][j] == 1){
+                    if(this.darkmode){ this.fill(255,255,255) }
+                    else{ this.fill(0,0,0) }
+                    this.fillRect(j*pieceWidth,i*pieceHeight,pieceWidth,pieceHeight)
+                }
+            }
+        }
+        
+        //------------------buttons omg so many magic numbers
+        if(this.darkmode){
+            this.context.strokeStyle = 'rgb(255,255,255)';
+        }
+        if(this.darkmode) {this.fill(255,255,255)}
+        else{this.fill(0,0,0)}
+        let textSize = 40;
+        this.startButton = new Path2D();
+        this.startButton.rect(8, this.height + 10, this.width - 15, 40)
+        if (this.running == true){
+            this.fillText('Stop', this.width/2 - textSize, this.height +42, textSize)
+        }else{
+            this.fillText('Start',this.width/2 - textSize, this.height + 42,textSize)
+        }
+        this.context.stroke(this.startButton);
+
+        this.darkModeButton = new Path2D();
+        this.darkModeButton.rect(8, this.height + 50, this.width - 15, 40)
+        if(this.darkmode){
+            this.fillText('Lightmode', this.width/2 - textSize-5, this.height +75, textSize/2)
+        }else{
+            this.fillText('Darkmode', this.width/2 - textSize-5, this.height +75, textSize/2)
+        }
+        this.context.stroke(this.darkModeButton);
+        // --------------------------------------
+
+
+        if(this.darkmode){this.context.strokeStyle = 'rgb(75,75,75)'; this.fill(255,255,255)}
+        else{this.context.strokeStyle = 'rgb(0,0,0)'; this.fill(0,0,0)}
+        
+    }
+    refreshBoard(){
+      //create the next board for conways game of life from the current board
+      let newBoard = this.board
+      for(let i = 0; i < this.rows; i++){
+        for(let j = 0; j < this.columns; j++){
+          let neighbors = this.getNeighbors(i,j)
+          if(this.board[i][j] == 1){
+            if(neighbors < 2 || neighbors > 3){
+              newBoard[i][j] = 0
+            }
+          }else{
+            if(neighbors == 3){
+              newBoard[i][j] = 1
+            }
+          }
+        }
+      }
+      this.board = newBoard
+    }
+    getNeighbors(row,column){
+      let neighbors = 0
+      for(let i = -1; i < 2; i++){
+        for(let j = -1; j < 2; j++){
+          if(i == 0 && j == 0){
+            continue
+          }
+          if(row + i < 0 || row + i >= this.rows || column + j < 0 || column + j >= this.columns){
+            continue
+          }
+          if(this.board[row + i][column + j] == 1){
+            neighbors++
+          }
+        }
+      }
+      return neighbors
+    }
+    update(){
+      this.refreshBoard()
+      this.drawBoard()
+    }
+}
