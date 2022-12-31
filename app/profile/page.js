@@ -1,24 +1,26 @@
 "use client"
 import React, { useEffect } from 'react';
 import { UserAuth } from '../context/AuthContext';
+import { useRouter } from 'next/navigation'
 // import Router from 'next/router';
 // import { useRouter } from 'next/router'
 
 
-export default function Login(){
-  const { googleSignIn, user, logOut } = UserAuth();
+export default function Profile(){
+  const { user, logOut } = UserAuth();
   
-  const handleGoogleSignIn = async () => {
-    try {
-      await googleSignIn();
-    } catch (error) {
-      console.log(error);
-    }
+  const router = useRouter();
+  if(!user) router.push('/login')
+  const handleLogOut = () => {
+    router.push('/')
+    logOut()
   };
+
   return (
-    <div className = "m-auto mt-9 w-40 h-32 border-4" >
-        <h3 className= 'text-center mb-5'> Login </h3>
-        <button className = 'm-auto' onClick={handleGoogleSignIn}> Google</button>
+    <div className = "m-auto text-center mt-40 border-4 w-80" >
+      <h1>Profile:</h1>
+      <h2>{user && user.email}</h2>
+      <button onClick = {handleLogOut} className = "mt-2 mb-3 ml-3 bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Sign Out</button>
     </div>
   );
 };

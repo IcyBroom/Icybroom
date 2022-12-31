@@ -80,27 +80,28 @@ export default function Schedule() {
 
       }
         let periods = []
+        let keyNumber = 0
         for (const period in data[scheduleDay]) {
             let arr = data[scheduleDay][period].split(" ")
             let timeLeft = timeRemaining(arr[0]+':00 '+arr[1],arr[3]+':00 '+arr[4])
             let eachPeriod =
-                    (<div key = {arr[0]} className = " flex justify-between mb-2  pl-3 pr-3">
-                        <div className = "">{period}</div>
-                        <div className = "">{data[scheduleDay][period]}</div>
-                        <div className = "">{timeLeft}</div>
+                    (<div key = {keyNumber++} className = " flex justify-between mb-2  pl-3 pr-3">
+                        <div key = {keyNumber++} className = "">{period}</div>
+                        <div key = {keyNumber++} className = "">{data[scheduleDay][period]}</div>
+                        <div key = {keyNumber++} className = "">{timeLeft}</div>
                     </div>)
-            if(timeLeft === "Done"){periods.push(<div className = "pr-5 bg-green-300 rounded-md">{eachPeriod}</div>)}
-            else if(timeLeft === "Not Started"){periods.push(<div className = "bg-gray-400 rounded-md">{eachPeriod}</div>)}
-            else{periods.push(<div className = "bg-yellow-200 rounded-md">{eachPeriod}</div>)}
+            if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = "pr-5 bg-green-300 rounded-md">{eachPeriod}</div>)}
+            else if(timeLeft === "Not Started"){periods.push(<div key = {keyNumber++} className = "bg-gray-400 rounded-md">{eachPeriod}</div>)}
+            else{periods.push(<div key = {keyNumber++} className = "bg-yellow-200 rounded-md">{eachPeriod}</div>)}
 
             // console.log(arr[3]+':00 '+arr[4])
         }
 
     return (
         
-        <div>
+        <div >
             
-            <div className = "bg-gray-200 p-5  rounded-lg max-w-2xl m-auto mt-20 text-xl">
+            <div  className = "bg-gray-200 p-5  rounded-lg max-w-2xl m-auto mt-20 text-xl">
                     <div className = "pt-0 text-center text-2xl mb-4">
                         ICCSD School Schedule
                     </div>
@@ -108,7 +109,7 @@ export default function Schedule() {
                     <div className = "flex justify-center">
                         {scheduleDay}
                         <label className=" ml-3 inline-flex relative items-center mb-4 cursor-pointer">
-                            <input type="checkbox" value="" className="sr-only peer" onChange = {toggleDay} checked = {scheduleDay == 'Thursday'}/>
+                            <input  type="checkbox" value="" className="sr-only peer" onChange = {toggleDay} checked = {scheduleDay == 'Thursday'}/>
                             <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                         </label>
                     </div>

@@ -4,7 +4,8 @@ const nextConfig = {
     appDir: true,
   },
   images: {
-    domains: ['lh3.googleusercontent.com', 'firebasestorage.googleapis.com', 'www.google.com'],
+    domains: ['lh3.googleusercontent.com', 'firebasestorage.googleapis.com', 'www.google.com', 'avatars.githubusercontent.com',
+          'graph.facebook.com'],
   },
 }
 
