@@ -82,7 +82,7 @@ class GOL{
         }
         document.onclick = (event) => {
             const isStartButton = context.isPointInPath(this.startButton, event.offsetX, event.offsetY);
-            if (isStartButton){ this.start()}
+            if (isStartButton){ this.start(); this.drawBoard()}
             const isDarkModeButton = context.isPointInPath(this.darkModeButton, event.offsetX, event.offsetY);
             if (isDarkModeButton){ this.darkmode = !this.darkmode; this.drawBoard()}
             if(this.mousey < this.height){
@@ -190,7 +190,7 @@ class GOL{
         else{this.fill(0,0,0)}
         let textSize = 40;
         this.startButton = new Path2D();
-        this.startButton.rect(8, this.height + 10, this.width - 15, 40)
+        this.startButton.rect(0, this.height + 10, this.width, 40)
         if (this.running == true){
             this.fillText('Stop', this.width/2 - textSize, this.height +42, textSize)
         }else{
@@ -199,7 +199,7 @@ class GOL{
         this.context.stroke(this.startButton);
 
         this.darkModeButton = new Path2D();
-        this.darkModeButton.rect(8, this.height + 50, this.width - 15, 40)
+        this.darkModeButton.rect(0, this.height + 50, this.width, 50)
         if(this.darkmode){
             this.fillText('Lightmode', this.width/2 - textSize-5, this.height +75, textSize/2)
         }else{
