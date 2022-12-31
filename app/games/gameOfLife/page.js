@@ -224,7 +224,7 @@ class GOL{
               newBoard[i][j] = 0
             }
           }else{
-            if(neighbors == 3){
+            if(neighbors == 3 || neighbors == 2){
               newBoard[i][j] = 1
             }
           }
