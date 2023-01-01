@@ -40,15 +40,15 @@ export default function SnakeGame(props){
     
     useEffect(()=>{
         let settings = {
-            width : props.width || 400,
-            height : props.height || 400,
-            columns: props.columns || 21,
-            rows: props.rows || 21,
+            width : props.width || 1000,
+            height : props.height || 500,
+            columns: props.columns || 50,
+            rows: props.rows || 25,
             connectNum: props.speed || 10,
         }
         const canvas = canva.current;
         canvas.width = settings.width
-        let extraHeight = 100;
+        let extraHeight = 60;
         canvas.height = settings.height + extraHeight;
         let context = canvas.getContext('2d');
         new Snake(settings.rows,settings.columns,settings.width,settings.height,canvas,context, extraHeight)
@@ -112,8 +112,7 @@ class Snake{
         this.drawBoard();
         document.onmousemove = (event) =>{
             const isStartButton = context.isPointInPath(this.startButton, event.offsetX, event.offsetY);
-            const isDarkModeButton = context.isPointInPath(this.darkModeButton, event.offsetX, event.offsetY);
-            if (isStartButton || isDarkModeButton){
+            if (isStartButton){
                 document.body.style.cursor = 'pointer';
             }else{
                 document.body.style.cursor = 'default';
@@ -122,8 +121,6 @@ class Snake{
         document.onclick = (event) => {
             const isStartButton = context.isPointInPath(this.startButton, event.offsetX, event.offsetY);
             if (isStartButton){ this.start()}
-            const isDarkModeButton = context.isPointInPath(this.darkModeButton, event.offsetX, event.offsetY);
-            if (isDarkModeButton){ this.darkmode = !this.darkmode; this.drawBoard()}
         }
         document.onkeydown = (e) => {
             e.preventDefault();
@@ -253,6 +250,7 @@ class Snake{
         //------------------buttons omg so many magic numbers
         if(this.darkmode){
             this.context.strokeStyle = 'rgb(255,255,255)';
+            this.fill(255,255,255)
         }
         let textSize = 40;
         this.startButton = new Path2D();
@@ -263,15 +261,6 @@ class Snake{
             this.fillText('Start',this.width/2 - textSize, this.height + 42,textSize)
         }
         this.context.stroke(this.startButton);
-
-        this.darkModeButton = new Path2D();
-        this.darkModeButton.rect(8, this.height + 50, this.width - 15, 40)
-        if(this.darkmode){
-            this.fillText('Lightmode', this.width/2 - textSize-5, this.height +75, textSize/2)
-        }else{
-            this.fillText('Darkmode', this.width/2 - textSize-5, this.height +75, textSize/2)
-        }
-        this.context.stroke(this.darkModeButton);
         // --------------------------------------
 
 
