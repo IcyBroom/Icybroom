@@ -15,15 +15,15 @@ export default function GameOfLife(props){
     
     useEffect(()=>{
         let settings = {
-            width : props.width || 400,
-            height : props.height || 400,
-            columns: props.columns || 50,
+            width : props.width || 1000,
+            height : props.height || 500,
+            columns: props.columns || 100,
             rows: props.rows || 50,
             speed: props.speed || 10,
         }
         const canvas = canva.current;
         canvas.width = settings.width
-        let extraHeight = 100;
+        let extraHeight = 60;
         canvas.height = settings.height + extraHeight;
         let context = canvas.getContext('2d');
         new GOL(settings.rows,settings.columns,settings.width,settings.height,canvas,context, extraHeight)
@@ -73,8 +73,7 @@ class GOL{
         this.drawBoard();
         document.onmousemove = (event) =>{
             const isStartButton = context.isPointInPath(this.startButton, event.offsetX, event.offsetY);
-            const isDarkModeButton = context.isPointInPath(this.darkModeButton, event.offsetX, event.offsetY);
-            if (isStartButton || isDarkModeButton){
+            if (isStartButton ){
                 document.body.style.cursor = 'pointer';
             }else{
                 document.body.style.cursor = 'default';
@@ -83,16 +82,14 @@ class GOL{
         document.onclick = (event) => {
             const isStartButton = context.isPointInPath(this.startButton, event.offsetX, event.offsetY);
             if (isStartButton){ this.start(); this.drawBoard()}
-            const isDarkModeButton = context.isPointInPath(this.darkModeButton, event.offsetX, event.offsetY);
-            if (isDarkModeButton){ this.darkmode = !this.darkmode; this.drawBoard()}
             if(this.mousey < this.height){
-              this.makeAlive(this.mouse.x,this.mouse.y)
+              this.toggleAlive(this.mouse.x,this.mouse.y)
               this.drawBoard()
             }
         }
         document.onmousedown = (event) => {
             if(this.mouse.y < this.height){
-              this.makeAlive(this.mouse.x,this.mouse.y)
+              this.toggleAlive(this.mouse.x,this.mouse.y)
               this.drawBoard()
             }
         }
@@ -101,13 +98,18 @@ class GOL{
             if(e.key == 'r' || e.key == 'R'){this.reset();}
         }
     }
-    makeAlive(x,y){
+    toggleAlive(x,y){
+        if(this.running == true){this.start()}
         let pieceWidth = this.width / this.columns
         let pieceHeight = this.height / this.rows
         let i = Math.floor(x / pieceWidth)
         let j = Math.floor(y / pieceHeight)
         if(i >= 0 && i < this.columns && j >= 0 && j < this.rows){
-            this.board[j][i] = 1
+            if(this.board[j][i] == 1){
+                this.board[j][i] = 0
+            }else{
+                this.board[j][i] = 1
+            }
         }
     }
     getMousePos(canvas, evt) {
@@ -150,6 +152,7 @@ class GOL{
     reset(){
         this.board = this.createBoard();
         this.drawBoard();
+        this.start()
     }
     createBoard(){
         let board = []
@@ -198,14 +201,6 @@ class GOL{
         }
         this.context.stroke(this.startButton);
 
-        this.darkModeButton = new Path2D();
-        this.darkModeButton.rect(0, this.height + 50, this.width, 50)
-        if(this.darkmode){
-            this.fillText('Lightmode', this.width/2 - textSize-5, this.height +75, textSize/2)
-        }else{
-            this.fillText('Darkmode', this.width/2 - textSize-5, this.height +75, textSize/2)
-        }
-        this.context.stroke(this.darkModeButton);
         // --------------------------------------
 
 
@@ -224,7 +219,7 @@ class GOL{
               newBoard[i][j] = 0
             }
           }else{
-            if(neighbors == 3 || neighbors == 2){
+            if(neighbors == 3){
               newBoard[i][j] = 1
             }
           }

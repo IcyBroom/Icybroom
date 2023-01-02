@@ -61,10 +61,7 @@ export default function SnakeGame(props){
                How to play:
                 <br/>
                 1. Collect Apples to get bigger.
-                <br/>
-                <br/>
-                <div className = "text-xs" >(The colors of the buttons change on purpose)</div>
-           </div>
+            </div>
        )
 }
 
