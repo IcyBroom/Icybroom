@@ -1,5 +1,6 @@
 "use client"
 import React, { useEffect, useRef } from "react";
+import Leaderboard from "./leaderBoard";
 
 const settings = {
     width : 400,
@@ -56,11 +57,19 @@ export default function SnakeGame(props){
     
 
     return (
-           <div style = {style.div}>
+           <div className = 'flex justify-center'>
+                <div className = "hidden xl:block text-center bg-gray-400 rounded-xl h-fit border-4 border-black w-60 mr-2 mt-2">
+                    <Leaderboard/>
+                </div>
+                <div style = {style.div}>
                <canvas ref={canva} style = {style.canvas}/>
                How to play:
                 <br/>
                 1. Collect Apples to get bigger.
+
+                </div>
+                <div className = "hidden xl:block w-60">
+                </div>
             </div>
        )
 }
@@ -70,6 +79,7 @@ export default function SnakeGame(props){
 class Snake{
     done = false;
     running = false;
+    scorePosted = false;
     score = 0;
     darkmode;
     intervalId;
@@ -89,6 +99,7 @@ class Snake{
     //Buttons
     startButton;
     darkModeButton;
+    postScoreButton
 
 
     constructor(rows, columns,width,height,canvas,context, extraHeight){
@@ -109,7 +120,11 @@ class Snake{
         this.drawBoard();
         document.onmousemove = (event) =>{
             const isStartButton = context.isPointInPath(this.startButton, event.offsetX, event.offsetY);
-            if (isStartButton){
+            let isPostScoreButton = false;
+            if(this.done)  {
+                isPostScoreButton = context.isPointInPath(this.postScoreButton, event.offsetX, event.offsetY);
+            }
+            if (isStartButton || isPostScoreButton){
                 document.body.style.cursor = 'pointer';
             }else{
                 document.body.style.cursor = 'default';
@@ -118,6 +133,11 @@ class Snake{
         document.onclick = (event) => {
             const isStartButton = context.isPointInPath(this.startButton, event.offsetX, event.offsetY);
             if (isStartButton){ this.start()}
+            let isPostScoreButton = false;
+            if(this.done)  {
+                isPostScoreButton = context.isPointInPath(this.postScoreButton, event.offsetX, event.offsetY);
+            }
+            if (isPostScoreButton){ this.postScore()}
         }
         document.onkeydown = (e) => {
             e.preventDefault();
@@ -188,6 +208,7 @@ class Snake{
         }
     }
     reset(){
+        this.scorePosted = false;
         this.score = 0;
         this.snake = this.initializeSnake(this.rows,this.columns)
         this.done = false;
@@ -369,11 +390,49 @@ class Snake{
         }
         return false
     }
+    postScore(){
+        if (this.scorePosted){
+            alert("Score already posted!"); 
+            return;
+        }
+        let name = prompt("Enter your name")
+        if(name == null || name == ""){
+            return
+        }
+        this.scorePosted = true
+        let score = this.score
+        let data = {
+            name,
+            score
+        }
+        let url = 'https://server.icybroom.repl.co/snake/scores'
+        fetch(url, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Success:', data);
+        })
+        .catch((error) => {
+            console.error('Error:', error);
+        });
+    }
     gameOver(){
+        // alert('Game Over! Your score was ' + this.score);
         clearInterval(this.intervalId)
         if(this.darkmode){this.context.strokeStyle = 'rgb(75,75,75)'; this.fill(255,255,255)}
         else{this.context.strokeStyle = 'rgb(0,0,0)'; this.fill(0,0,0)}
         this.fillText("Game Over",70,380,50)
+        //create a button right below the game over text to post high score
+        this.postScoreButton = new Path2D();
+        this.postScoreButton.rect(100, 400, 200, 50)
+        this.fillText("Post Score", 120, 435, 30)
+        this.context.stroke(this.postScoreButton);
+
         this.done = true;
         this.running = false;
     }

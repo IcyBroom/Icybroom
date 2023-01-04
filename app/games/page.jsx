@@ -15,11 +15,11 @@ let games = [
         title: "Snake",
         link: '/games/snake'
     },
-    {
-        image: golIcon,
-        title: "Conway's Game of Life",
-        link: '/games/gameOfLife'
-    },
+    // {
+    //     image: golIcon,
+    //     title: "Conway's Game of Life",
+    //     link: '/games/gameOfLife'
+    // },
     {
         image: ticTacToe,
         title: "Tic Tac Toe",
