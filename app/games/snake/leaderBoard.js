@@ -7,7 +7,7 @@ export default function Leaderboard() {
     useEffect(() => {
             // const response = await fetch('https://server.icybroom.repl.co/scores', {mode: "no-cors"});
             // const data = await response.json();
-            fetch("https://snake-server.icybroom.repl.co/snake/scores",  )
+            fetch("https://server.icybroom.repl.co/snake/scores",  )
             .then(x => x.json())
             .then(x => {
                  console.log(x);

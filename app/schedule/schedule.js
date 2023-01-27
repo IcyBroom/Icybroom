@@ -17,6 +17,7 @@ export default function Schedule() {
     } 
     const [scheduleDay, setDay] = useState(getScheduleDay())
     const [time , setTime] = useState("12:00:00 AM")
+    const [timeLeftConservative, setTimeLeftConservative] = useState(true)
     useEffect(() => {
 
         setInterval(() => {
@@ -33,13 +34,13 @@ export default function Schedule() {
             setDay("Normal")
         }
     }
-    const timeRemaining = (startingTime, endingTime) => {
+    const timeRemaining = (startingTime, endingTime, isConservative) => {
         //find the differenct between time and ending time, use the time in the state and account for the AM and PM
         //if the time is after or equal to the ending time then return "Done"
         //if the time is before the ending time then return the time remaining
         //return the time remaining in minutes, if it's less than 1 minute than return the seconds remaining
         //if the time is before the starting time, then return "Not Started"
-
+        const SECONDS_IN_HOUR = 3600
         let timeArr = time.split(":")
         let endingTimeArr = endingTime.split(":")
         let startingTimeArr = startingTime.split(":")
@@ -67,13 +68,18 @@ export default function Schedule() {
         let startingTimeInSeconds = parseInt(startingTimeArr[0])*3600 + parseInt(startingTimeArr[1])*60 + parseInt(startingTimeArr[2])
         if(timeInSeconds > endingTimeInSeconds){
             return "Done"
-        }else if(timeInSeconds < startingTimeInSeconds){
+        }else if(timeInSeconds < startingTimeInSeconds && isConservative){
             return "Not Started"
         }else{
             let timeLeft = endingTimeInSeconds - timeInSeconds
-            if(timeLeft < 60){
+            if(timeLeft < 60 && timeLeft > 0){
                 return timeLeft + " Seconds"
-            }else{
+            }else if (Math.abs(timeLeft) > SECONDS_IN_HOUR){
+                let minutes = Math.abs(Math.floor((timeLeft%SECONDS_IN_HOUR)/60)) // get the minutes in the form of 2 digits (ex: 5 -> 05) and 0 -> 00
+                if(minutes < 10) minutes = "0" + minutes
+                return Math.floor(timeLeft/SECONDS_IN_HOUR) + ":" + minutes + " Hours"
+            }
+            else{
                 return Math.floor(timeLeft/60) + " Minutes"
             }
         }
@@ -83,15 +89,16 @@ export default function Schedule() {
         let keyNumber = 0
         for (const period in data[scheduleDay]) {
             let arr = data[scheduleDay][period].split(" ")
-            let timeLeft = timeRemaining(arr[0]+':00 '+arr[1],arr[3]+':00 '+arr[4])
+            let timeLeft = timeRemaining(arr[0]+':00 '+arr[1],arr[3]+':00 '+arr[4], true)
+            let totalTimeLeft = timeRemaining(arr[0]+':00 '+arr[1],arr[3]+':00 '+arr[4], timeLeftConservative)
             let eachPeriod =
                     (<div key = {keyNumber++} className = " flex justify-between mb-2  pl-3 pr-3">
                         <div key = {keyNumber++} className = "">{period}</div>
                         <div key = {keyNumber++} className = "">{data[scheduleDay][period]}</div>
-                        <div key = {keyNumber++} className = "">{timeLeft}</div>
+                        <div key = {keyNumber++} className = "">{totalTimeLeft}</div>
                     </div>)
             if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = "pr-5 bg-green-300 rounded-md">{eachPeriod}</div>)}
-            else if(timeLeft === "Not Started"){periods.push(<div key = {keyNumber++} className = "bg-gray-400 rounded-md">{eachPeriod}</div>)}
+            else if(timeLeft === "Not Started" ){periods.push(<div key = {keyNumber++} className = "bg-gray-400 rounded-md">{eachPeriod}</div>)}
             else{periods.push(<div key = {keyNumber++} className = "bg-yellow-200 rounded-md">{eachPeriod}</div>)}
 
             // console.log(arr[3]+':00 '+arr[4])
@@ -114,7 +121,13 @@ export default function Schedule() {
                         </label>
                     </div>
                     <div className = "mr-4"> Time: {time} </div>
-                    <div className = "mr-5"> Time Left: </div>
+                    <div className = "cursor-pointer"> Time Left: 
+                        <label className=" ml-3 inline-flex relative items-center mb-4 cursor-pointer">
+                            <input  type="checkbox" value="" className="sr-only peer" onChange = {() => {setTimeLeftConservative(!timeLeftConservative)}} checked = {timeLeftConservative == false}/>
+                            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
+                        </label>
+                    </div>
+                    
                 </div>
                 {periods}
             </div>
