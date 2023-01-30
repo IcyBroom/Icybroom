@@ -17,7 +17,6 @@ export default function Schedule() {
     } 
     const [scheduleDay, setDay] = useState(getScheduleDay())
     const [time , setTime] = useState("12:00:00 AM")
-    const [timeLeftConservative, setTimeLeftConservative] = useState(true)
     useEffect(() => {
 
         setInterval(() => {
@@ -90,7 +89,7 @@ export default function Schedule() {
         for (const period in data[scheduleDay]) {
             let arr = data[scheduleDay][period].split(" ")
             let timeLeft = timeRemaining(arr[0]+':00 '+arr[1],arr[3]+':00 '+arr[4], true)
-            let totalTimeLeft = timeRemaining(arr[0]+':00 '+arr[1],arr[3]+':00 '+arr[4], timeLeftConservative)
+            let totalTimeLeft = timeRemaining(arr[0]+':00 '+arr[1],arr[3]+':00 '+arr[4], false)
             let eachPeriod =
                     (<div key = {keyNumber++} className = " flex justify-between mb-2  pl-3 pr-3">
                         <div key = {keyNumber++} className = "">{period}</div>
@@ -121,13 +120,9 @@ export default function Schedule() {
                         </label>
                     </div>
                     <div className = "mr-4"> Time: {time} </div>
-                    <div className = "cursor-pointer"> Time Left: 
-                        <label className=" ml-3 inline-flex relative items-center mb-4 cursor-pointer">
-                            <input  type="checkbox" value="" className="sr-only peer" onChange = {() => {setTimeLeftConservative(!timeLeftConservative)}} checked = {timeLeftConservative == false}/>
-                            <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                        </label>
+                    <div className = "cursor-pointer">
+                        Time Left: 
                     </div>
-                    
                 </div>
                 {periods}
             </div>
