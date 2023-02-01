@@ -19,8 +19,9 @@ export default function About(props){
             <Person name = "Ayman Noreldaim" description = "This is a website that I made to learn about Programming websites. It's pretty cool" image = {ayman}></Person>
             <p className = "text-xl"> This is a website I made to learn more about programming in JavaScript. I used Next.js and TailwindCSS</p>
             <br />
-            <p> I built a few small games, a chat app, an authentication system, a server, and a component to keep track of my high school bell schedule.</p>
+            <p> I built a few small games, a chat app(retired), an authentication system, a server, and a time table to keep track of my high school bell schedule.</p>
             <br />
+            <p className = "text-sm"> {""}</p>
         </div>
     )
 }

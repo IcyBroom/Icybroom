@@ -15,10 +15,10 @@ const pages = [
         text: 'Games',
         path: '/games'
     },
-    {
-        text: 'Superchat',
-        path: '/superchat'
-    },
+    // {
+    //     text: 'Superchat',
+    //     path: '/superchat'
+    // },
     {
         text: 'About',
         path: '/about'
