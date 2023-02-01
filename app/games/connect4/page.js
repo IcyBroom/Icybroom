@@ -69,6 +69,7 @@ export default function Connect4(props){
 //Game
 
 class Board {
+    bot = true
     turn = 0; 
     winner = 0;
     
@@ -136,6 +137,37 @@ class Board {
           y: evt.clientY - rect.top
         };
     }
+    // getBestMove(board, player) {
+    //     const opponent = player === 1 ? 2 : 1;
+      
+    //     function minimax(board, depth, isMaximizing) {
+    //       const result = this.checkWinner(board);
+    //       if (result !== null) {
+    //         return result === player ? 10 - depth : depth - 10;
+    //       }
+    //       if (checkTie(board)) {
+    //         return 0;
+    //       }
+      
+    //       let bestScore = isMaximizing ? -Infinity : Infinity;
+    //       let move = -1;
+    //       for (let i = 0; i < 7; i++) {
+    //         const newBoard = makeMove(board, i, isMaximizing ? player : opponent);
+    //         if (newBoard) {
+    //           const score = minimax(newBoard, depth + 1, !isMaximizing);
+    //           if (isMaximizing && score > bestScore) {
+    //             bestScore = score;
+    //             move = i;
+    //           } else if (!isMaximizing && score < bestScore) {
+    //             bestScore = score;
+    //           }
+    //         }
+    //       }
+    //       return move === -1 ? bestScore : move;
+    //     }
+      
+    //     return minimax(board, 0, true);
+    //   }
     ///////////////////////////////////////////////////////////////////////////////
     createBoard(){
         let board = []
@@ -198,52 +230,52 @@ class Board {
         }
         this.board[i][column] = (this.turn % 2) + 1
         this.drawBoard();
-        if(this.checkWin()){
+        if(this.checkWin(this.board)){
             this.winner = (this.turn % 2) + 1
             this.message();
         }
-        if(this.checkTie()){
+        if(this.checkTie(this.board)){
             this.winner = 3;
             this.message();
         }
         this.turn++;
+        // if(this.bot && this.turn % 2 == 1){
+        //     this.makeMove(this.getBestMove(this.board, 2))
+        // }
     }
-    checkTie(){
-        let tie = true;
+    checkTie(board){
+        if(this.checkWin(board) == true){return false}
         for(let i = 0; i < this.rows; i++){
             for(let j = 0; j < this.columns; j++){
-                if(this.board[i][j] == 0){
-                    tie = false;
-                }
-                else if(this.checkWin() == true){
-                    tie = false;
+                if(board[i][j] == 0){
+                    return false;
                 }
             }
         }
-        return tie;
+        return true;
     }
-    checkWin(){
-        let win = false;
-        let piece = this.turn % 2 + 1;
-
-        if(this.checkHorizontal(piece)){
-            win = true;
+    // checkWinner(board){
+    //     for(let i = 1; i <= 2; i++){
+    //         if(this.checkHorizontal(i,board) || this.checkVertical(i,board) || this.checkDiagonal(i,board)){
+    //             return i;
+    //         }
+    //     }
+    //     return null;
+    // }
+    checkWin(board){
+        for(let i = 1; i <= 2; i++){
+            if(this.checkHorizontal(i,board) || this.checkVertical(i,board) || this.checkDiagonal(i,board)){
+                return true;
+            }
         }
-        if(this.checkVertical(piece)){
-            win = true;
-        }
-        if(this.checkDiagonal(piece)){
-            win = true;
-        }
-
-        return win;
+        return false;
     }
-    checkHorizontal(piece){
+    checkHorizontal(piece,board){
         let win = false;
         for(let i = 0; i < this.rows; i++){
             let count = 0;
             for(let j = 0; j < this.columns; j++){
-                if(this.board[i][j] == piece){
+                if(board[i][j] == piece){
                     count++;
                 }
                 else{
@@ -256,12 +288,12 @@ class Board {
         }
         return win;
     }
-    checkVertical(piece){
+    checkVertical(piece,board){
         let win = false;
         for(let i = 0; i < this.columns; i++){
             let count = 0;
             for(let j = 0; j < this.rows; j++){
-                if(this.board[j][i] == piece){
+                if(board[j][i] == piece){
                     count++;
                 }
                 else{
@@ -274,14 +306,14 @@ class Board {
         }
         return win;
     }
-    checkDiagonal(piece){
+    checkDiagonal(piece,board){
         let win = false;
         // top left to bottom right
         for(let i = 0; i < this.rows - this.connectNum + 1; i++){
             for(let j = 0; j < this.columns - this.connectNum + 1; j++){
                 let count = 0;
                 for(let k = 0; k < this.connectNum; k++){
-                    if(this.board[i+k][j+k] == piece){
+                    if(board[i+k][j+k] == piece){
                         count++;
                     }
                     else{
@@ -298,7 +330,7 @@ class Board {
             for(let j = this.columns - 1; j >= this.connectNum - 1; j--){
                 let count = 0;
                 for(let k = 0; k < this.connectNum; k++){
-                    if(this.board[i+k][j-k] == piece){
+                    if(board[i+k][j-k] == piece){
                         count++;
                     }
                     else{

@@ -96,7 +96,7 @@ export default function Schedule() {
                 let eachPeriod;
                 const pushPeriod = () => {
                     if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = {"pr-5 rounded-md "+ (level == 0 ? "bg-green-300":"bg-green-500")} >{eachPeriod}</div>)}
-                    else if(timeLeft === "Not Started" ){periods.push(<div key = {keyNumber++} className = {"rounded-md" + (level == 0 ? "bg-gray-400":"bg-gray-600")} >{eachPeriod}</div>)}
+                    else if(timeLeft === "Not Started" ){periods.push(<div key = {keyNumber++} className = {"rounded-md " + (level == 0 ? "bg-gray-400":"bg-gray-500")} >{eachPeriod}</div>)}
                     else{periods.push(<div key = {keyNumber++} className = {"rounded-md "+ (level == 0 ? "bg-yellow-200":"bg-yellow-500")} >{eachPeriod}</div>)}
                 }
                 if(!arr[2]){
