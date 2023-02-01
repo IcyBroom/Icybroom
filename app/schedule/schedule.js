@@ -94,6 +94,11 @@ export default function Schedule() {
                 let timeLeft = timeRemaining(beginningTime[0]+':00 '+beginningTime[1],endingTime[0]+':00 '+endingTime[1], true)
                 let totalTimeLeft = timeRemaining(beginningTime[0]+':00 '+beginningTime[1],endingTime[0]+':00 '+endingTime[1], false)
                 let eachPeriod;
+                const pushPeriod = () => {
+                    if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = {"pr-5 rounded-md "+ (level == 0 ? "bg-green-300":"bg-green-500")} >{eachPeriod}</div>)}
+                    else if(timeLeft === "Not Started" ){periods.push(<div key = {keyNumber++} className = {"rounded-md" + (level == 0 ? "bg-gray-400":"bg-gray-600")} >{eachPeriod}</div>)}
+                    else{periods.push(<div key = {keyNumber++} className = {"rounded-md "+ (level == 0 ? "bg-yellow-200":"bg-yellow-500")} >{eachPeriod}</div>)}
+                }
                 if(!arr[2]){
                     eachPeriod = (
                     <div key = {keyNumber++} className = " flex justify-between mb-2  pl-3 pr-3">
@@ -111,21 +116,15 @@ export default function Schedule() {
                         <div key = {keyNumber++} className = "mr-8">{arr[0] +" - "+arr[1]}</div>
                         <div key = {keyNumber++} className = "">{totalTimeLeft}</div>
                     </div>)
-                    if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = "pr-5 bg-green-300 rounded-md">{eachPeriod}</div>)}
-                    else if(timeLeft === "Not Started" ){periods.push(<div key = {keyNumber++} className = "bg-gray-400 rounded-md">{eachPeriod}</div>)}
-                    else{periods.push(<div key = {keyNumber++} className = "bg-yellow-200 rounded-md">{eachPeriod}</div>)}
+                    pushPeriod()
                     if(open){
-                        
                         for(const lunch in arr[2]){
-                            console.log(lunch)
                             createSchedule(arr[2][lunch], level + 1)
                         }
                     }
                     continue;
                 }
-            if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = {"pr-5 rounded-md" + " bg-green-"+(level+3)*100}>{eachPeriod}</div>)}
-            else if(timeLeft === "Not Started" ){periods.push(<div key = {keyNumber++} className = "bg-gray-400 rounded-md">{eachPeriod}</div>)}
-            else{periods.push(<div key = {keyNumber++} className = "bg-yellow-200 rounded-md">{eachPeriod}</div>)}
+                pushPeriod()
         }
             // console.log(arr[3]+':00 '+arr[4])
         }
