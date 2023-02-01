@@ -21,7 +21,6 @@ export default function About(props){
             <br />
             <p> I built a few small games, a chat app, an authentificaiton system, a server, and a component to keep track of my high school bell schedule.</p>
             <br />
-            <p> {"(I added this section because I'm putting this website on my resume)"}</p>
         </div>
     )
 }
