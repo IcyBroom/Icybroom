@@ -86,22 +86,50 @@ export default function Schedule() {
       }
         let periods = []
         let keyNumber = 0
-        for (const period in data[scheduleDay]) {
-            let arr = data[scheduleDay][period].split(" ")
-            let timeLeft = timeRemaining(arr[0]+':00 '+arr[1],arr[3]+':00 '+arr[4], true)
-            let totalTimeLeft = timeRemaining(arr[0]+':00 '+arr[1],arr[3]+':00 '+arr[4], false)
-            let eachPeriod =
-                    (<div key = {keyNumber++} className = " flex justify-between mb-2  pl-3 pr-3">
+        const createSchedule = (scheduleData, level) =>{
+            for (const period in scheduleData) {
+                let arr = scheduleData[period]
+                let beginningTime = arr[0].split(" ") // split the time and the AM/PM
+                let endingTime = arr[1].split(" ") // split the time and the AM/PM
+                let timeLeft = timeRemaining(beginningTime[0]+':00 '+beginningTime[1],endingTime[0]+':00 '+endingTime[1], true)
+                let totalTimeLeft = timeRemaining(beginningTime[0]+':00 '+beginningTime[1],endingTime[0]+':00 '+endingTime[1], false)
+                let eachPeriod;
+                if(!arr[2]){
+                    eachPeriod = (
+                    <div key = {keyNumber++} className = " flex justify-between mb-2  pl-3 pr-3">
                         <div key = {keyNumber++} className = "">{period}</div>
-                        <div key = {keyNumber++} className = "">{data[scheduleDay][period]}</div>
+                        <div key = {keyNumber++} className = "">{arr[0] +" - "+arr[1]}</div>
+                        <div key = {keyNumber++} className = "">{totalTimeLeft}</div>
+                    </div>)}
+                else{
+                    const [open, setOpen] = useState(false)
+                    eachPeriod = (<div onClick = {()=>{setOpen(!open);}} key = {keyNumber++} className = "group hover: cursor-pointer flex justify-between mb-2  pl-3 pr-3">
+                        <div className = "flex">
+                            <div key = {keyNumber++} className = "mr-2">{period}</div>
+                            <div className = {(open ? "rotate-90":"group-hover:rotate-90") + " transition duration-300 ease-in-out "} >▷</div>
+                        </div>
+                        <div key = {keyNumber++} className = "mr-8">{arr[0] +" - "+arr[1]}</div>
                         <div key = {keyNumber++} className = "">{totalTimeLeft}</div>
                     </div>)
-            if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = "pr-5 bg-green-300 rounded-md">{eachPeriod}</div>)}
+                    if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = "pr-5 bg-green-300 rounded-md">{eachPeriod}</div>)}
+                    else if(timeLeft === "Not Started" ){periods.push(<div key = {keyNumber++} className = "bg-gray-400 rounded-md">{eachPeriod}</div>)}
+                    else{periods.push(<div key = {keyNumber++} className = "bg-yellow-200 rounded-md">{eachPeriod}</div>)}
+                    if(open){
+                        
+                        for(const lunch in arr[2]){
+                            console.log(lunch)
+                            createSchedule(arr[2][lunch], level + 1)
+                        }
+                    }
+                    continue;
+                }
+            if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = {"pr-5 rounded-md" + " bg-green-"+(level+3)*100}>{eachPeriod}</div>)}
             else if(timeLeft === "Not Started" ){periods.push(<div key = {keyNumber++} className = "bg-gray-400 rounded-md">{eachPeriod}</div>)}
             else{periods.push(<div key = {keyNumber++} className = "bg-yellow-200 rounded-md">{eachPeriod}</div>)}
-
+        }
             // console.log(arr[3]+':00 '+arr[4])
         }
+        createSchedule(data[scheduleDay], 0)
 
     return (
         
