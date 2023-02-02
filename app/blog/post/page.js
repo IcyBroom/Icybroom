@@ -59,7 +59,7 @@ export default function Form() {
                 <input className = " w-96 border-2 border-black rounded-lg mb-4 h-9 m-auto" onChange={(e)=>{setTitle(e.currentTarget.value)}} type = "text" placeholder = "Title"></input>
                 <input className = "w-96 border-2 border-black rounded-lg mb-4 h-9 m-auto" onChange={(e)=>{setDate(e.currentTarget.value)}} type = "text" placeholder = "Date"></input>
                 <textarea className = "w-8/12 m-auto p-3 max-w-4xl border-2 border-black rounded-lg h-24" onChange={(e)=>{setMessage(e.currentTarget.value)}} type = "text" placeholder = "Blog Post"></textarea>
-                <input className = "mt-5 m-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer" type = 'submit' disabled = {!name || !email || !message} value = "Submit" />
+                <input className = "mt-5 m-auto bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded cursor-pointer" type = 'submit' disabled = {!title|| !date || !message} value = "Submit" />
             </form>
         </div>
     )
