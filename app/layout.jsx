@@ -1,5 +1,6 @@
 import './globals.css'
-import Navbar from './navbar'
+import Navbar from './layout/navbar'
+import Footer from './layout/footer'
 import {AuthContextProvider} from './context/AuthContext'
 import Head from 'next/head'
 
@@ -12,6 +13,7 @@ export default function RootLayout({ children }) {
           <Navbar />
           {children}
         </AuthContextProvider>
+        <Footer />
       </body>
     </html>
   )

@@ -2,7 +2,7 @@
 import Image from 'next/image'
 import icybroom from './icybroom.png'
 import Link from 'next/link'
-import {UserAuth} from './context/AuthContext'
+import {UserAuth} from '../context/AuthContext'
 import { useState } from 'react'
 
 
@@ -19,29 +19,16 @@ const pages = [
     //     text: 'Superchat',
     //     path: '/superchat'
     // },
+    // {
+    //     text: 'Blog',
+    //     path: '/blog'
+    // },
     {
         text: 'About',
         path: '/about'
     }
-]
-// const footerLinks = [
-//     {
-//         name: 'Twitter',
-//         link: 'https://twitter.com/',
-//         image: twitterIcon
-//     },
-//     {
-//         name: 'Gmail',
-//         link: 'https://gmail.com/',
-//         image: googleIcon
-//     },
-//     {
-//         name: 'Discord',
-//         link: 'https://discord.com/',
-//         image: discordIcon
-//     },
 
-// ]
+]
 
 export default function Navbar() {
 
