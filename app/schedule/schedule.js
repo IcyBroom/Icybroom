@@ -105,7 +105,7 @@ export default function Schedule() {
                 let totalTimeLeft = timeRemaining(beginningTime[0]+':00 '+beginningTime[1],endingTime[0]+':00 '+endingTime[1], false)
                 let eachPeriod;
                 const pushPeriod = () => {
-                    if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = {"pr-5 rounded-md "+ (level == 0 ? "bg-green-300":"bg-green-500")} >{eachPeriod}</div>)}
+                    if(timeLeft === "Done"){periods.push(<div key = {keyNumber++} className = {"sm:pr-5 rounded-md "+ (level == 0 ? "bg-green-300":"bg-green-500")} >{eachPeriod}</div>)}
                     else if(timeLeft === "Not Started" ){periods.push(<div key = {keyNumber++} className = {"rounded-md " + (level == 0 ? "bg-gray-400":"bg-gray-500")} >{eachPeriod}</div>)}
                     else{periods.push(<div key = {keyNumber++} className = {"rounded-md "+ (level == 0 ? "bg-yellow-200":"bg-yellow-500")} >{eachPeriod}</div>)}
                 }
@@ -121,7 +121,7 @@ export default function Schedule() {
                     eachPeriod = (<div onClick = {()=>{setOpen(!open);}} key = {keyNumber++} className = "group hover: cursor-pointer flex justify-between mb-2  pl-3 pr-3">
                         <div className = "flex">
                             <div key = {keyNumber++} className = "mr-2">{period}</div>
-                            <div className = {(open ? "rotate-90":"group-hover:rotate-90") + " hidden sm:block origin-center transition duration-300 ease-in-out "} >▷</div>
+                            <div className = {(open ? "rotate-90":"group-hover:rotate-90") + "  sm:block origin-center transition duration-300 ease-in-out "} >▷</div>
                         </div>
                         <div key = {keyNumber++} className = "mr-8">{arr[0] +" - "+arr[1]}</div>
                         <div key = {keyNumber++} className = "">{totalTimeLeft}</div>
