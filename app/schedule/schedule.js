@@ -121,7 +121,7 @@ export default function Schedule() {
                     eachPeriod = (<div onClick = {()=>{setOpen(!open);}} key = {keyNumber++} className = "group hover: cursor-pointer flex justify-between mb-2  pl-3 pr-3">
                         <div className = "flex">
                             <div key = {keyNumber++} className = "mr-2">{period}</div>
-                            <div className = {(open ? "rotate-90":"group-hover:rotate-90") + "  sm:block origin-center transition duration-300 ease-in-out "} >▷</div>
+                            <div className = {(open ? "rotate-90":"group-hover:rotate-90") + "hidden  sm:block origin-center transition duration-300 ease-in-out "} >▷</div>
                         </div>
                         <div key = {keyNumber++} className = "mr-8">{arr[0] +" - "+arr[1]}</div>
                         <div key = {keyNumber++} className = "">{totalTimeLeft}</div>
