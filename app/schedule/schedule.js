@@ -6,7 +6,15 @@ import { useEffect, useState } from 'react';
 
 export default function Schedule() {
     const getScheduleDay = () =>{
+        //if the day is 3/2/2023 then return 2H Delay
         const date = new Date()
+        const month = date.getMonth() + 1
+        const day = date.getDate()
+        const year = date.getFullYear()
+        console.log(month, day, year)
+        if(month === 2 && day === 3 && year === 2023){
+            return "2H Delay"
+        }
         const weekDay = date.getDay()
         //if weekday is thursday then return Thursday else return normal
         if(weekDay === 4){
@@ -29,6 +37,8 @@ export default function Schedule() {
     const toggleDay = () =>{
         if(scheduleDay === "Normal"){
             setDay("Thursday")
+        }else if(scheduleDay === "Thursday"){
+            setDay("2H Delay")
         }else{
             setDay("Normal")
         }
@@ -140,13 +150,15 @@ export default function Schedule() {
                     </div>
                 <div className='flex justify-between'>
                     <div className = "flex justify-center">
+                            
                         {scheduleDay}
-                        <label className=" ml-3 inline-flex relative items-center mb-4 cursor-pointer">
+                        {/* <label className=" ml-3 inline-flex relative items-center mb-4 cursor-pointer">
                             <input  type="checkbox" value="" className="sr-only peer" onChange = {toggleDay} checked = {scheduleDay == 'Thursday'}/>
                             <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
-                        </label>
+                        </label> */}
+                        <button type="button" onClick = { toggleDay }className="ml-2 w-14 text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 h-8 text-center text-justify-center mb-2"><div className = "relative  bottom-1 right-3" >Toggle</div></button>
                     </div>
-                    <div className = "mr-4"> Time: {time} </div>
+                    <div className = "mr-12"> Time: {time} </div>
                     <div className = "cursor-pointer">
                         Time Left: 
                     </div>
