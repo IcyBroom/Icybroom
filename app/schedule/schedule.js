@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 
 export default function Schedule() {
     const getScheduleDay = () =>{
-        //if the day is 3/2/2023 then return 2H Delay
+        //if the day is 2/3/2023 then return 2H Delay
         const date = new Date()
         const month = date.getMonth() + 1
         const day = date.getDate()

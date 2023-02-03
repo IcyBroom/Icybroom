@@ -81,6 +81,7 @@ class Snake{
     running = false;
     scorePosted = false;
     score = 0;
+    fps = 60;
     darkmode;
     intervalId;
     snake = {
@@ -197,10 +198,14 @@ class Snake{
     if(this.running == false){
         this.running = true;
         window.clearInterval(this.intervalId)
+        let tik = 0;
         this.intervalId = window.setInterval(()=>{
+            tik++;
+            if (tik % (this.fps/settings.speed) == 0){
+                this.update()
+            }
             this.drawBoard()
-            this.update()
-        },1000/settings.speed)
+        },1000/this.fps)
     }else{
         this.running = false;
         window.clearInterval(this.intervalId)
