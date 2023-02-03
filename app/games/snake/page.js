@@ -201,10 +201,10 @@ class Snake{
         let tik = 0;
         this.intervalId = window.setInterval(()=>{
             tik++;
+            this.drawBoard()
             if (tik % (this.fps/settings.speed) == 0){
                 this.update()
             }
-            this.drawBoard()
         },1000/this.fps)
     }else{
         this.running = false;
@@ -335,7 +335,7 @@ class Snake{
             }
         }
         if(dir == 'up' || dir == 'down'){
-            if(snakeDir != 'up' && snakeDir != 'up'){
+            if(snakeDir != 'up' && snakeDir != 'down'){
                 return dir;
             }
         }
