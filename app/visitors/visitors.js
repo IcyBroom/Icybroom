@@ -8,7 +8,7 @@ export default function Visitors() {
             fetch("https://server.icybroom.repl.co/visitors")
             .then(x => x.json())
             .then(x => {
-                 console.log(x);
+                //  console.log(x);
                  setVisitors(x.visitors);
             });
         }, []);

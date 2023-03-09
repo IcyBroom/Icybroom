@@ -11,9 +11,12 @@ export default function Schedule() {
         const month = date.getMonth() + 1
         const day = date.getDate()
         const year = date.getFullYear()
-        console.log(month, day, year)
+        // console.log(month, day, year)
         if(month === 2 && day === 3 && year === 2023){
             return "2H Delay"
+        }
+        else if(month === 3 && day === 9 && year === 2023){
+            return "2H Early Dismissal"
         }
         const weekDay = date.getDay()
         //if weekday is thursday then return Thursday else return normal
@@ -35,13 +38,21 @@ export default function Schedule() {
         }
     }, [])
     const toggleDay = () =>{
-        if(scheduleDay === "Normal"){
-            setDay("Thursday")
-        }else if(scheduleDay === "Thursday"){
-            setDay("2H Delay")
+        let days = ["Normal", "Thursday", "2H Delay", "2H Early Dismissal"]
+        // if(scheduleDay === "Normal"){
+        //     setDay("Thursday")
+        // }else if(scheduleDay === "Thursday"){
+        //     setDay("2H Delay")
+        // }else{
+        //     setDay("Normal")
+        // }
+        let index = days.indexOf(scheduleDay)
+        if(index === days.length - 1){
+            index = 0
         }else{
-            setDay("Normal")
+            index++
         }
+        setDay(days[index])
     }
     const timeRemaining = (startingTime, endingTime, isConservative) => {
         //find the differenct between time and ending time, use the time in the state and account for the AM and PM
