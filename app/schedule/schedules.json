@@ -53,14 +53,14 @@
     "2H Early Dismissal":{
         "Period 1": ["8:50 AM" ,"9:25 AM"],
         "Period 2": ["9:30 AM","10:05 AM" ] ,
-        "Period 3": ["10:10 AM","10:45 PM" ],
-        "Period 5": ["10:50 PM","11:25 PM"],
+        "Period 3": ["10:10 AM","10:45 AM" ],
+        "Period 5": ["10:50 AM","11:25 AM"],
 
         "Period 4": 
-            [ "11:25 PM" ,"12:40 PM",
+            [ "11:25 AM" ,"12:40 PM",
                 {
-                    "A Lunch": { "A Lunch":["11:25 PM","11:55 PM"]},
-                    "B Lunch": { "B Lunch":["11:50 PM","12:20 PM"]},
+                    "A Lunch": { "A Lunch":["11:25 AM","11:55 AM"]},
+                    "B Lunch": { "B Lunch":["11:50 AM","12:20 PM"]},
                     "C Lunch": { "C Lunch":["12:15 PM","12:40 PM"]}
                 }
             ],
