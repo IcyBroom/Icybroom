@@ -18,6 +18,7 @@ export default function Visitors() {
             <h1>Visits:</h1>
             <div className = "text font-bold">{visitors}</div>
             <h6 className = "text-gray-600">(everytime you come back to the home page it goes up one)</h6>
+            other website (ICCSD): <a className = "underline" href="https://iccsd.vercel.app/">iccsd.vercel.app</a>
         </div>
     )
 }

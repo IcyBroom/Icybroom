@@ -19,10 +19,10 @@ const pages = [
     //     text: 'Superchat',
     //     path: '/superchat'
     // },
-    {
-        text: 'Blog',
-        path: '/blog'
-    },
+    // {
+    //     text: 'Blog',
+    //     path: '/blog'
+    // },
     {
         text: 'About',
         path: '/about'
