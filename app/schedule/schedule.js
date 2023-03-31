@@ -15,7 +15,7 @@ export default function Schedule() {
         if(month === 2 && day === 3 && year === 2023){
             return "2H Delay"
         }
-        else if(month === 3 && day === 9 && year === 2023){
+        else if(month === 3 && day === 31 && year === 2023){
             return "2H Early Dismissal"
         }
         const weekDay = date.getDay()
