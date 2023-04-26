@@ -5,6 +5,7 @@ import { useEffect, useState } from 'react';
 
 
 export default function Schedule() {
+    const [dropDown, setDropDown] = useState("hidden");
     const getScheduleDay = () =>{
         //if the day is 2/3/2023 then return 2H Delay
         const date = new Date()
@@ -37,15 +38,8 @@ export default function Schedule() {
             clearInterval()
         }
     }, [])
+    let days = ["Normal", "Thursday", "2H Delay", "2H Early Dismissal"]
     const toggleDay = () =>{
-        let days = ["Normal", "Thursday", "2H Delay", "2H Early Dismissal"]
-        // if(scheduleDay === "Normal"){
-        //     setDay("Thursday")
-        // }else if(scheduleDay === "Thursday"){
-        //     setDay("2H Delay")
-        // }else{
-        //     setDay("Normal")
-        // }
         let index = days.indexOf(scheduleDay)
         if(index === days.length - 1){
             index = 0
@@ -167,7 +161,22 @@ export default function Schedule() {
                             <input  type="checkbox" value="" className="sr-only peer" onChange = {toggleDay} checked = {scheduleDay == 'Thursday'}/>
                             <div className="w-11 h-6 bg-gray-200 rounded-full peer peer-focus:ring-4 peer-focus:ring-blue-300 dark:peer-focus:ring-blue-800 dark:bg-gray-700 peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-0.5 after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600"></div>
                         </label> */}
-                        <button type="button" onClick = { toggleDay }className="sm:ml-2 w-14 text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 h-8 text-center text-justify-center mb-2"><div className = "relative  bottom-1 right-3" >Toggle</div></button>
+                        <div className = "ml-0 sm:ml-2 mb-1"> 
+                        
+                            <button onClick = {()=>{setDropDown(dropDown == "" ? "hidden": "")}} id="dropdownDefaultButton" data-dropdown-toggle="dropdown" className=" h-8   text-white  bg-gray-200 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center inline-flex items-center dark:bg-gray-500 dark:hover:bg-blue-700 dark:focus:ring-blue-800" type="button">Days <svg className="w-4 h-4 ml-2" aria-hidden="true" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg></button>
+
+                            <div id="dropdown" className={dropDown+" z-10 absolute bg-white divide-y divide-gray-100 rounded-lg shadow w-44 dark:bg-gray-700"}>
+                                <ul className="cursor-pointer py-2 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownDefaultButton">
+                                
+                                {days.map((day) =>{
+                                    return <li>
+                                        <a onClick = {()=>{setDay(day); setDropDown(dropDown == "" ? "hidden": "");}} className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">{day}</a>
+                                    </li>})}
+                                
+                                </ul>
+                            </div>
+                        </div>
+                        {/* <button type="button" onClick = { toggleDay }className="sm:hidden sm:ml-2 w-14 text-white bg-gradient-to-r from-cyan-500 to-blue-500 hover:bg-gradient-to-bl focus:ring-4 focus:outline-none focus:ring-cyan-300 dark:focus:ring-cyan-800 font-medium rounded-lg text-sm px-5 py-2.5 h-8 text-center text-justify-center mb-2"><div className = "relative  bottom-1 right-3" >Toggle</div></button> */}
                     </div>
                     <div className = "sm:mr-12 "> {time} </div>
                     <div>
