@@ -58,9 +58,9 @@ export default function SnakeGame(props){
 
     return (
            <div className = 'flex justify-center'>
-                <div className = "hidden xl:block text-center bg-gray-400 rounded-xl h-fit border-4 border-black w-60 mr-2 mt-2">
+                {/* <div className = "hidden xl:block text-center bg-gray-400 rounded-xl h-fit border-4 border-black w-60 mr-2 mt-2">
                     <Leaderboard/>
-                </div>
+                </div> */}
                 <div style = {style.div}>
                <canvas ref={canva} style = {style.canvas}/>
                How to play:
@@ -68,8 +68,8 @@ export default function SnakeGame(props){
                 1. Collect Apples to get bigger.
 
                 </div>
-                <div className = "hidden xl:block w-60">
-                </div>
+                {/* <div className = "hidden xl:block w-60">
+                </div> */}
             </div>
        )
 }

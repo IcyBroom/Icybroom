@@ -8,7 +8,7 @@ export default function Home() {
     <main>
       <Schedule></Schedule>
 
-      <Visitors />
+      {/* <Visitors /> */}
     </main>
   )
 }

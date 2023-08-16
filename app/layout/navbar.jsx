@@ -23,10 +23,10 @@ const pages = [
     //     text: 'Blog',
     //     path: '/blog'
     // },
-    {
-        text: 'About',
-        path: '/about'
-    }
+    // {
+    //     text: 'About',
+    //     path: '/about'
+    // }
 
 ]
 

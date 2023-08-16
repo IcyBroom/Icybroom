@@ -50,7 +50,7 @@ export default function Pong(props){
         canvas.width = settings.width
         canvas.height = settings.height;
         let context = canvas.getContext('2d');
-        new Game(context, settings);
+        // new Game(context, settings);
     })
     
 

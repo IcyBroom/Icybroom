@@ -1,5 +1,7 @@
 "use client"
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import titleScreen from './titleScreen.png';
+import Image from 'next/image';
 //import 'game.js';
 
 
@@ -29,9 +31,10 @@ const style = {
         }
     }
 }
-
-export default function Connect4(props){
+export default function Home(props){
     let c4 = useRef();
+    const [gamemode, setGamemode] = useState();
+
     
     useEffect(()=>{
         let settings = {
@@ -45,35 +48,43 @@ export default function Connect4(props){
         canvas.width = settings.width
         canvas.height = settings.height;
         let context = canvas.getContext('2d');
-        new Board(settings.rows,settings.columns,settings.width,settings.height,settings.connectNum,canvas,context);
-    })
+        new Board(settings.rows,settings.columns,settings.width,settings.height,settings.connectNum,canvas,context,gamemode);
+    },[gamemode])
     
-
     return (
-           <div style = {style.div}>
-               <canvas ref={c4} style = {style.canvas}/>
-               How to play:
+        <div>
+            <div className = {gamemode ? "hidden":""}>
+                <Image src = {titleScreen} className = "m-auto mt-40" height="400" alt = "title screen"/>
                 <br/>
-                1. Click on the column to drop a piece.
+                <div className = "flex m-auto justify-center">
+                    <button type="button" onClick = {()=>{setGamemode(1)}} className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 ">Local</button>
+                    <button type="button" onClick = {()=>{setGamemode(2)}} className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 ">Solo</button>
+                    <button type="button" onClick = {()=>{setGamemode(3)}} className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-200 font-medium rounded-full text-sm px-5 py-2.5 mr-2 mb-2 ">Online</button>
+                </div>
+            </div>
+            <div style = {style.div} className = {gamemode ? "":" hidden "}>
+                <canvas ref={c4} style = {style.canvas}/>
+                How to play:
+                 <br/>
+                 1. Click on the column to drop a piece.
                 <br/>
-                2. The first player to get 4 pieces in a row wins.
-                <br/>
-                3. If no player has 4 pieces in a row, the game ends in a tie.
-                <br/>
-                Press R to start a new game
-           </div>
-       )
+                 2. The first player to get 4 pieces in a row wins.
+                 <br/>
+                 3. If no player has 4 pieces in a row, the game ends in a tie.
+                 <br/>
+                 Press R to start a new game
+            </div>
+            
+        </div>
+    )
 }
 
-
-//Game
-
 class Board {
-    bot = true
     turn = 0; 
-    winner = 0;
+    done = false;
     
-    constructor(rows,columns,width,height, connectNum, canvas, context){
+    constructor(rows,columns,width,height, connectNum, canvas, context, gamemode){
+        this.winner = 0;
         this.canvas = canvas;
         this.context = context;
         this.rows = rows;
@@ -87,15 +98,14 @@ class Board {
         this.mouse = {x: 0, y: 0};
         this.previewColumn = -1;
         this.mouseMove = document.addEventListener("mousemove", e => {
-            if(this.winner != 0){return}
+            
             this.mouse = this.getMousePos(canvas, e);
             // let temp = this.previewColumn;
             // this.previewColumn = parseInt(this.mouse.x / (this.width / this.columns));
             // if(temp != this.previewColumn ){
             //     this.drawBoard();
-            //     this.previewNextMove();
+            //     this.previewNextMove(this.previewColumn);
             // }
-            //this.drawBoard();
         });
         document.onclick = (event) => {
             if(this.mouse.x > 0 && this.mouse.x < this.width && this.mouse.y > 0 && this.mouse.y < this.height){
@@ -137,37 +147,44 @@ class Board {
           y: evt.clientY - rect.top
         };
     }
-    // getBestMove(board, player) {
-    //     const opponent = player === 1 ? 2 : 1;
-      
-    //     function minimax(board, depth, isMaximizing) {
-    //       const result = this.checkWinner(board);
-    //       if (result !== null) {
-    //         return result === player ? 10 - depth : depth - 10;
-    //       }
-    //       if (checkTie(board)) {
-    //         return 0;
-    //       }
-      
-    //       let bestScore = isMaximizing ? -Infinity : Infinity;
-    //       let move = -1;
-    //       for (let i = 0; i < 7; i++) {
-    //         const newBoard = makeMove(board, i, isMaximizing ? player : opponent);
-    //         if (newBoard) {
-    //           const score = minimax(newBoard, depth + 1, !isMaximizing);
-    //           if (isMaximizing && score > bestScore) {
-    //             bestScore = score;
-    //             move = i;
-    //           } else if (!isMaximizing && score < bestScore) {
-    //             bestScore = score;
-    //           }
-    //         }
-    //       }
-    //       return move === -1 ? bestScore : move;
-    //     }
-      
-    //     return minimax(board, 0, true);
-    //   }
+    getBestMove() {
+          // It's the AI player's turn (player 2), as turn is even.
+          const validMoves = [];
+          const opponent = 1; // Assuming the human player is always player 1.
+    
+          for (let col = 0; col < this.columns; col++) {
+            if (this.board[0][col] === 0) {
+              // Check if the column is not full, meaning a move is possible in that column.
+              validMoves.push(col);
+            }
+          }
+    
+          // Prioritize winning moves, if any.
+          for (const col of validMoves) {
+            let row = this.findAvailableRow(this.board, col);
+            this.board[row][col] = 2; // Assume AI player (player 2) makes the move.
+            if (this.checkWin(this.board, 2)) {
+              this.board[row][col] = 0; // Undo the move.
+              return col;
+            }
+            this.board[row][col] = 0; // Undo the move.
+          }
+    
+          // Prioritize blocking opponent's winning moves, if any.
+          for (const col of validMoves) {
+            let row = this.findAvailableRow(this.board, col);
+            this.board[row][col] = 1; // Assume the opponent makes the move.
+            if (this.checkWin(this.board, 1)) {
+              this.board[row][col] = 0; // Undo the move.
+              return col;
+            }
+            this.board[row][col] = 0; // Undo the move.
+          }
+    
+          // If no winning or blocking moves are available, select a random valid move.
+          const randomIndex = Math.floor(Math.random() * validMoves.length);
+          return validMoves[randomIndex];
+      }
     ///////////////////////////////////////////////////////////////////////////////
     createBoard(){
         let board = []
@@ -180,6 +197,7 @@ class Board {
         return board;
     }
     drawBoard(){
+        if(this.winner != 0){return}
         this.fill(70,70,255);
         this.fillRect(0,0,this.width,this.height)
 
@@ -203,11 +221,11 @@ class Board {
             }
         }
     }
-    previewNextMove(){
+    previewNextMove(column){
+        if(this.winner != 0){return}
         if(!(this.mouse.x > 0 && this.mouse.x < this.width && this.mouse.y > 0 && this.mouse.y < this.height)){return}
         let pieceWidth = parseInt(this.width / this.columns)
         let pieceHeight = parseInt(this.height / this.rows)
-        let column = parseInt(this.mouse.x / pieceWidth);
         if(this.board[0][column] != 0){return}
         let i = this.rows - 1;
         while(this.board[i][column] != 0 && i >= 0){
@@ -219,6 +237,14 @@ class Board {
             this.context.ellipse(column*pieceWidth + pieceWidth/2,i*pieceHeight + pieceHeight/2,pieceWidth/2-2,pieceHeight/2-2,0,0,Math.PI*2);
             this.context.fill();
         }
+    }
+    findAvailableRow(board, col) {
+        for (let row = this.rows - 1; row >= 0; row--) {
+            if (board[row][col] === 0) {
+                return row;
+            }
+        }
+        return null;
     }
 
     makeMove(columnNum){
@@ -233,15 +259,21 @@ class Board {
         if(this.checkWin(this.board)){
             this.winner = (this.turn % 2) + 1
             this.message();
+            this.done = true;
         }
         if(this.checkTie(this.board)){
             this.winner = 3;
             this.message();
+            this.done = true;
         }
         this.turn++;
-        // if(this.bot && this.turn % 2 == 1){
-        //     this.makeMove(this.getBestMove(this.board, 2))
-        // }
+        if (this.gamemode == 2 && this.turn % 2 == 1){
+            this.makeMove(this.getBestMove())
+        }
+        // this.previewNextMove();
+        if(this.turn % 2 == 1 && this.gamemode == 2){
+            this.makeMove(this.getBestMove(this.board, 2))
+        }
     }
     checkTie(board){
         if(this.checkWin(board) == true){return false}
@@ -254,14 +286,6 @@ class Board {
         }
         return true;
     }
-    // checkWinner(board){
-    //     for(let i = 1; i <= 2; i++){
-    //         if(this.checkHorizontal(i,board) || this.checkVertical(i,board) || this.checkDiagonal(i,board)){
-    //             return i;
-    //         }
-    //     }
-    //     return null;
-    // }
     checkWin(board){
         for(let i = 1; i <= 2; i++){
             if(this.checkHorizontal(i,board) || this.checkVertical(i,board) || this.checkDiagonal(i,board)){
@@ -345,7 +369,6 @@ class Board {
         return win;
     }
     message(){
-        document.removeEventListener('mousemove',this.mouseMove)
         this.fills(0,0,0,.6);
         this.fillRect(0,0,this.width,this.height);
         //this.drawBoard();
@@ -365,6 +388,8 @@ class Board {
         this.board = this.createBoard();
         this.turn = 0;
         this.winner = 0;
+        this.mouse = {x: 0, y: 0}
         this.drawBoard();
+        this.done = false;
     }
 }
